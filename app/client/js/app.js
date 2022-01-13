@@ -1,6 +1,6 @@
 const app = angular.module("myApp", []);
 const baseUrl = "http://127.0.0.1:8000"
-let globalToken = ''
+
 //რეგისტრაცია
 app.controller("register", function ($scope, $http) {
     $scope.registerUser = function () {
@@ -50,13 +50,50 @@ app.controller("login", function ($scope, $http, $window) {
 app.controller("main", function ($scope, $http, $window) {
     //TODO რეცეპტების გვერდი,ჰედერი სამი მენიუს აითემით, tags,ingredients,recipes
     const token = $window.localStorage.getItem('token');
+
     if (token === undefined || token === null || token === "") {
         $window.location.href = "http://" + $window.location.host + "/recipe-app-api/app/client/view/index.html";
     } else {
-
+        $http.defaults.headers.common.Authorization = 'Token ' + token;
+        console.log(token)
         $http.get(baseUrl + '/api/recipe/').then(function (res) {
             console.log(res)
+            $scope.navs = res.data
         });
+
+        $scope.getIngredients = function () {
+            //TODO ingredients list ის წამოღება
+            $http.get(baseUrl + '/api/recipe/ingredients/').then(function (res) {
+                console.log(res)
+            });
+        }
+
+        $scope.getRecipes = function () {
+            //TODO tags list ის წამოღება
+            $http.get(baseUrl + '/api/recipe/recipes/').then(function (res) {
+                console.log(res)
+            });
+        }
+
+        $scope.getTags = function () {
+            //TODO recipes list ის წამოღება
+            $http.get(baseUrl + '/api/recipe/tags/').then(function (res) {
+                console.log(res)
+            });
+        }
+
+        $scope.addIngredient = function () {
+            //TODO ინგრედიენტის დამატება
+            //ენდპოინტი არ მახსოვს მაგრამ
+            let ingredientData = {
+                "name": $scope.name
+                //მოდელის რაც გადაეცემა ფორმიდან
+                //ხო დამატების ღილაკზე ჯერ ფორმა უნდა გავაკეთოთ
+                //ხვალ გავაკეთოთ
+
+            }
+            $http.post(baseUrl + 'endpont',)
+        }
     }
 
 })
