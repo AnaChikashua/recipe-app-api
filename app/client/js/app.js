@@ -27,7 +27,11 @@ app.controller("register", function ($scope, $http) {
 
 //ავტორიზაცია
 app.controller("login", function ($scope, $http, $window) {
-
+    const token = $window.localStorage.getItem('token');
+    if (token) {
+        $window.localStorage.removeItem('token')
+    }
+    console.log($window.localStorage.getItem('token'))
     $scope.getToken = function () {
 
         $scope.isError = false
@@ -39,7 +43,7 @@ app.controller("login", function ($scope, $http, $window) {
             console.log(res)
             console.log($window)
             $window.localStorage.setItem('token', res.data.token);
-            $window.location.href = "http://" + $window.location.host + "/recipe-app-api/app/client/view/recipes.html";
+            $window.location.href = "http://127.0.0.1:8000/recipes/";
         }).catch(function (res) {
             console.log(res)
         })
@@ -53,7 +57,8 @@ app.controller("main", function ($scope, $http, $window) {
     const token = $window.localStorage.getItem('token');
 
     if (token === undefined || token === null || token === "") {
-        $window.location.href = "http://" + $window.location.host + "/recipe-app-api/app/client/view/index.html";
+        console.log(token)
+        $window.location.href = "http://127.0.0.1:8000/";
     } else {
         $http.defaults.headers.common.Authorization = 'Token ' + token;
         console.log(token)

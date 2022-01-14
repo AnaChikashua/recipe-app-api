@@ -19,7 +19,7 @@
                     <div class="col-lg-8 col-xl-6">
                         <div class="card rounded-3">
 
-                            <bu class="card-body p-4 p-md-5">
+                            <div class="card-body p-4 p-md-5">
                                 <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">ავტორიზაცია</h3>
                                 <form class="px-md-2">
                                     <div class="form-outline mb-4">
@@ -41,15 +41,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                        <a type="submit" class="btn btn-success btn-lg mb-1 btn-block "
-                                                href="{% url 'recipes' %}"
-                                                ng-click="getToken()"
-                                             >ავტორიზაცია
-                                        </a>
+                                    <a type="submit" class="btn btn-success btn-lg mb-1 btn-block "
+                                       ng-click="getToken()"
+                                    >ავტორიზაცია
+                                    </a>
                                     <br>
-                                    <a type="submit" class=" mb-1" href="{% url 'index' %}"> არ ხართ
+                                    <a type="submit" class="mb-1" href="{% url 'index' %}"> არ ხართ
                                         დარეგისტრირებული?</a>
-
                                 </form>
 
                             </div>
