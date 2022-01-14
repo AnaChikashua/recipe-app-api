@@ -68,7 +68,12 @@ app.controller("main", function ($scope, $http, $window) {
         $scope.isTags = false;
         $scope.isRecipes = false;
 
-
+        $http.get(baseUrl + '/api/recipe/ingredients/').then(function (res) {
+            $scope.ingredients = res.data
+        });
+        $http.get(baseUrl + '/api/recipe/tags/').then(function (res) {
+            $scope.tags = res.data;
+        });
 
         $scope.getIngredients = function () {
             //TODO ingredients list ის წამოღება
@@ -78,10 +83,9 @@ app.controller("main", function ($scope, $http, $window) {
             $scope.isRecipes = false;
             $http.get(baseUrl + '/api/recipe/ingredients/').then(function (res) {
                 $scope.ingredients = res.data
-                console.log(res)
             });
         }
-        $scope.getIngredients()
+
 
         $scope.getRecipes = function () {
             $scope.isIngredient = false;
@@ -95,14 +99,11 @@ app.controller("main", function ($scope, $http, $window) {
 
         $scope.getTagList = function () {
             //TODO tags list ის წამოღება
-
             $scope.isIngredient = false;
             $scope.isTags = true;
             $scope.isRecipes = false;
-
             $http.get(baseUrl + '/api/recipe/tags/').then(function (res) {
                 $scope.tags = res.data;
-                console.log(res)
             });
         }
         $scope.addIngredient = function () {
@@ -122,10 +123,23 @@ app.controller("main", function ($scope, $http, $window) {
             $scope.showRecipeInput = !$scope.showRecipeInput;
             //TODO რეცეპტის დამატება
             //ენდპოინტი არ მახსოვს მაგრამ
-            $http.post(baseUrl + '/api/recipe/ingredients/', {"name": $scope.ingredientName}).then(function (res) {
+
+            let ingr = []
+            let t = []
+            ingr.push($scope.ingRec.id)
+            t.push($scope.tagRecipe.id)
+            $http.post(baseUrl + '/api/recipe/recipes/', {
+                "title": $scope.title,
+                "ingredients": ingr,
+                "tags": t,
+                "time_minutes": $scope.time,
+                "price": $scope.price.toString(),
+                "link": $scope.link
+            }).then(function (res) {
                 console.log(res)
                 $scope.recipeName = null
                 $scope.getRecipes()
+                // $scope.getRecipes()
             }).catch(function (res) {
                 console.log(res)
             })
