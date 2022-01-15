@@ -11,3 +11,11 @@ class IndexView(TemplateView):
 
 class RecipeView(TemplateView):
     template_name = 'recipes.html'
+
+
+class TagsView(TemplateView):
+    template_name = 'tags.html'
+
+
+class IngredientsView(TemplateView):
+    template_name = 'ingredients.html'

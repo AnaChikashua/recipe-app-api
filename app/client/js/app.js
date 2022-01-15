@@ -3,23 +3,32 @@ const baseUrl = "http://127.0.0.1:8000"
 
 //რეგისტრაცია
 app.controller("register", function ($scope, $http) {
+    $scope.isError = false
+
     $scope.registerUser = function () {
-        console.log('ძალიან')
-        console.log(baseUrl)
-        $scope.isError = false
+
         let sendData = {
             "email": $scope.email,
             "password": $scope.password,
+            "confirmPassword": $scope.confirmPassword,
             "name": $scope.name
         }
-        $http.post(baseUrl + "/api/user/create/", sendData).then(function (res) {
-            console.log(res)
-            alert("მომხმარებელი წარმატებით დარეგისტრირდა")
-            // $scope.user = res.data
-        }).catch(function (res) {
-            console.log("test");
-            $scope.isError = true;
-        })
+        console.log(sendData)
+        if (sendData.email !== undefined && sendData.name !== undefined && sendData.password !== undefined && sendData.confirmPassword !== undefined) {
+            if (sendData.password !== sendData.confirmPassword) {
+                alert("პაროლები უნდა ემთხვეოდეს ერთმანეთს")
+                return;
+            }
+            $http.post(baseUrl + "/api/user/create/", sendData).then(function (res) {
+                console.log(res)
+                alert("მომხმარებელი წარმატებით დარეგისტრირდა")
+                // $scope.user = res.data
+            }).catch(function (res) {
+
+                $scope.isError = true;
+            })
+        }
+
     }
 
 })
@@ -31,7 +40,6 @@ app.controller("login", function ($scope, $http, $window) {
     if (token) {
         $window.localStorage.removeItem('token')
     }
-    console.log($window.localStorage.getItem('token'))
     $scope.getToken = function () {
 
         $scope.isError = false
@@ -40,12 +48,9 @@ app.controller("login", function ($scope, $http, $window) {
             "password": $scope.password
         }
         $http.post(baseUrl + "/api/user/token/", sendData).then(function (res) {
-            console.log(res)
-            console.log($window)
             $window.localStorage.setItem('token', res.data.token);
             $window.location.href = "http://127.0.0.1:8000/recipes/";
         }).catch(function (res) {
-            console.log(res)
         })
     }
 
@@ -56,66 +61,63 @@ app.controller("main", function ($scope, $http, $window) {
     //TODO რეცეპტების გვერდი,ჰედერი სამი მენიუს აითემით, tags,ingredients,recipes
     const token = $window.localStorage.getItem('token');
 
+
     if (token === undefined || token === null || token === "") {
-        console.log(token)
+
         $window.location.href = "http://127.0.0.1:8000/";
     } else {
         $http.defaults.headers.common.Authorization = 'Token ' + token;
-        console.log(token)
-        $http.get(baseUrl + '/api/recipe/').then(function (res) {
-            console.log(res)
-            $scope.navs = res.data
-        });
-        $scope.showInput = false;
-        $scope.showRecipeInput = false;
-        $scope.showTag = false;
-        $scope.isIngredient = true;
-        $scope.isTags = false;
-        $scope.isRecipes = false;
+        $scope.getUserInfo = function () {
 
-        $http.get(baseUrl + '/api/recipe/ingredients/').then(function (res) {
-            $scope.ingredients = res.data
-        });
-        $http.get(baseUrl + '/api/recipe/tags/').then(function (res) {
-            $scope.tags = res.data;
-        });
-
+            $http.get(baseUrl + '/api/user/me').then(function (res) {
+                console.log(res.data)
+                $scope.user = res.data.name;
+            })
+        }
+        $scope.getUserInfo();
         $scope.getIngredients = function () {
-            //TODO ingredients list ის წამოღება
-
-            $scope.isIngredient = true;
-            $scope.isTags = false;
-            $scope.isRecipes = false;
             $http.get(baseUrl + '/api/recipe/ingredients/').then(function (res) {
                 $scope.ingredients = res.data
-                console.log($scope.ingredients)
             });
         }
 
 
         $scope.getRecipes = function () {
-            $scope.isIngredient = false;
-            $scope.isTags = false;
-            $scope.isRecipes = true;
             $http.get(baseUrl + '/api/recipe/recipes/').then(function (res) {
-                $scope.recipes = res.data
-                console.log(res)
+
+                let data = res.data;
+                console.log(data)
+                $scope.recipes = [];
+                data.forEach(f => {
+
+                    let d = {
+                        "id": f.id,
+                        "title": f.title,
+                        "ingredients": $scope.ingredients.find(t => t.id === f.ingredients[0]).name,
+                        "tags": $scope.tags.find(t => t.id === f.tags[0]).name,
+                        "time_minutes": f.time_minutes,
+                        "price": f.price,
+                        "link": f.link
+                    }
+                    $scope.recipes.push(d)
+                })
+                // $scope.recipes = res.data
+
             });
         }
 
         $scope.getTagList = function () {
-            //TODO tags list ის წამოღება
-            $scope.isIngredient = false;
-            $scope.isTags = true;
-            $scope.isRecipes = false;
             $http.get(baseUrl + '/api/recipe/tags/').then(function (res) {
                 $scope.tags = res.data;
             });
         }
+
+        $scope.getIngredients();
+        $scope.getTagList();
+        $scope.getRecipes();
+
         $scope.addIngredient = function () {
-            $scope.showInput = !$scope.showInput;
-            //TODO ინგრედიენტის დამატება
-            //ენდპოინტი არ მახსოვს მაგრამ
+
             $http.post(baseUrl + '/api/recipe/ingredients/', {"name": $scope.ingredientName}).then(function (res) {
                 console.log(res)
                 $scope.ingredientName = null
@@ -126,38 +128,29 @@ app.controller("main", function ($scope, $http, $window) {
         }
 
         $scope.addRecipe = function () {
-            $scope.showRecipeInput = !$scope.showRecipeInput;
-            //TODO რეცეპტის დამატება
-            //ენდპოინტი არ მახსოვს მაგრამ
-
             let ingr = []
             let t = []
             ingr.push($scope.ingRec.id)
             t.push($scope.tagRecipe.id)
-            $http.post(baseUrl + '/api/recipe/recipes/', {
+            const sendData = {
                 "title": $scope.title,
                 "ingredients": ingr,
                 "tags": t,
                 "time_minutes": $scope.time,
                 "price": $scope.price.toString(),
                 "link": $scope.link
-            }).then(function (res) {
-                console.log(res)
+            };
+            $http.post(baseUrl + '/api/recipe/recipes/', sendData).then(function (res) {
                 $scope.recipeName = null
                 $scope.getRecipes()
-                // $scope.getRecipes()
             }).catch(function (res) {
                 console.log(res)
             })
         }
 
         $scope.addTag = function () {
-            $scope.showTag = !$scope.showTag;
-            //TODO რეცეპტის დამატება
-            //ენდპოინტი არ მახსოვს მაგრამ
             $http.post(baseUrl + '/api/recipe/tags/', {"name": $scope.tagName}).then(function (res) {
-                console.log(res)
-                $scope.recipeName = null
+                $scope.tagName = null
                 $scope.getTagList()
             }).catch(function (res) {
                 console.log(res)

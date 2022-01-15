@@ -121,10 +121,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "client/js"),
+    os.path.join(BASE_DIR, "client/"),
+
 )
 
-STATIC_URL = '/client/js/'
+STATIC_URL = '/client/'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/media'
 AUTH_USER_MODEL = 'core.User'
