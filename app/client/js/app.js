@@ -83,6 +83,7 @@ app.controller("main", function ($scope, $http, $window) {
             $scope.isRecipes = false;
             $http.get(baseUrl + '/api/recipe/ingredients/').then(function (res) {
                 $scope.ingredients = res.data
+                console.log($scope.ingredients)
             });
         }
 

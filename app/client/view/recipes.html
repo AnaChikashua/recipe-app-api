@@ -77,8 +77,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="ing in ingredients ">
-                            <th scope="row">{{ing.id}}</th>
-                            <td>{{ing.name}}</td>
+                            <th scope="row" ng-bind="ing.id"></th>
+                            <td ng-bind="ing.name"></td>
 
                         </tr>
 
@@ -127,8 +127,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="t in tags ">
-                            <th scope="row">{{t.id}}</th>
-                            <td>{{t.name}}</td>
+                            <th scope="row" ng-bind="t.id">{{t.id}}</th>
+                            <td ng-bind="t.name">{{t.name}}</td>
 
                         </tr>
 
@@ -232,24 +232,23 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="ing in recipes ">
-                                <th scope="row">{{ing.id}}</th>
-                                <td>
-                                    {{ing.title}}
+                                <th scope="row" ng-bind="ing.id"></th>
+                                <td ng-bind="ing.title">
                                 </td>
                                 <td>
 
                                     <ul>
-                                        <li ng-repeat="item in ing.ingredients">{{item}}</li>
+                                        <li ng-repeat="item in ing.ingredients"><p ng-bind="item"></p></li>
                                     </ul>
                                 </td>
                                 <td>
                                     <ul>
-                                        <li ng-repeat="t in ing.tags">{{t}}</li>
+                                        <li ng-repeat="t in ing.tags"><p ng-bind="t"></p></li>
                                     </ul>
                                 </td>
-                                <td>{{ing.time_minutes}}</td>
-                                <td>{{ing.price}}</td>
-                                <td><a ng-hreg="ing.link">{{ing.link}}</a></td>
+                                <td ng-bind="ing.time_minutes"></td>
+                                <td ng-bind="ing.price"></td>
+                                <td><a ng-hreg="ing.link" ng-bind="ing.link"></a></td>
 
                             </tr>
 
@@ -257,28 +256,7 @@
                             </tbody>
                         </table>
 
-                        <!--                    modal-->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                             aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ...
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
-                                        </button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
