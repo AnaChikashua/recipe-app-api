@@ -62,7 +62,6 @@ app.controller("main", function ($scope, $http, $window) {
     //TODO რეცეპტების გვერდი,ჰედერი სამი მენიუს აითემით, tags,ingredients,recipes
     const token = $window.localStorage.getItem('token');
 
-
     if (token === undefined || token === null || token === "") {
 
         $window.location.href = "http://127.0.0.1:8000/";
@@ -89,18 +88,19 @@ app.controller("main", function ($scope, $http, $window) {
                 let data = res.data;
                 $scope.recipes = [];
                 data.forEach(f => {
-
                     let d = {
                         "id": f.id,
                         "title": f.title,
-                        "ingredients": $scope.ingredients.find(t => t.id === f.ingredients[0]).name,
-                        "tags": $scope.tags.find(t => t.id === f.tags[0]).name,
+                        "ingredients": $scope.ingredients.filter(t => f.ingredients.includes(t.id)),
+                        "tags": $scope.tags.filter(t => f.tags.includes(t.id)),
                         "time_minutes": f.time_minutes,
                         "price": f.price,
                         "link": f.link
                     }
+
                     $scope.recipes.push(d)
                 })
+                console.log($scope.recipes)
                 // $scope.recipes = res.data
 
             });
@@ -126,12 +126,32 @@ app.controller("main", function ($scope, $http, $window) {
                 console.log(res)
             })
         }
-
+        $scope.selectedIngredients = []
+        $scope.selectedTag = []
+        $scope.changeIngr = function () {
+            console.log($scope.ingRec)
+            $scope.selectedIngredients = []
+            $scope.ingRec.forEach(f => {
+                $scope.selectedIngredients.push(f.name)
+            });
+            $scope.ingredientsSelected = $scope.selectedIngredients.join(" ; ")
+        }
+        $scope.changeTag = function () {
+            $scope.selectedIngredients = []
+            $scope.tagRecipe.forEach(f => {
+                $scope.selectedTag.push(f.name)
+            });
+            $scope.tagsSelected = $scope.selectedTag.join(" ; ")
+        }
         $scope.addRecipe = function () {
             let ingr = []
             let t = []
-            ingr.push($scope.ingRec.id)
-            t.push($scope.tagRecipe.id)
+            $scope.ingRec.forEach(f => {
+                ingr.push(f.id)
+            })
+            $scope.tagRecipe.forEach(f => {
+                t.push(f.id)
+            })
             const sendData = {
                 "title": $scope.title,
                 "ingredients": ingr,
@@ -141,7 +161,6 @@ app.controller("main", function ($scope, $http, $window) {
                 "link": $scope.link
             };
             $http.post(baseUrl + '/api/recipe/recipes/', sendData).then(function (res) {
-                $scope.recipeName = null
                 $scope.getRecipes()
             }).catch(function (res) {
                 console.log(res)
