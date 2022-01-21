@@ -16,7 +16,7 @@
     <script src="{% static 'js/app.js' %}"></script>
 
 </head>
-<body ng-app="myApp" ng-controller="login" class="bg-primary">
+<body ng-app="myApp" ng-controller="login" class="bg-secondary">
 <div id="layoutAuthentication">
     <div id="layoutAuthentication_content">
         <main>
@@ -40,7 +40,8 @@
 
                                     <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
 
-                                        <button type="submit" class="btn btn-primary" ng-click="getToken()">ავტორიზაცია</button>
+                                        <button type="submit" class="btn btn-dark" ng-click="getToken()">ავტორიზაცია</button>
+                                        <p ng-if="isError" class="text-center" style="color: red;margin: 10px">მომხმარებლის მეილი ან პაროლი არასწორია!</p>
                                     </div>
                                 </form>
                             </div>

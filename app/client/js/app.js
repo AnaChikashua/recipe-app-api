@@ -51,6 +51,7 @@ app.controller("login", function ($scope, $http, $window) {
             $window.localStorage.setItem('token', res.data.token);
             $window.location.href = "http://127.0.0.1:8000/recipes/";
         }).catch(function (res) {
+            $scope.isError = true
         })
     }
 
@@ -86,7 +87,6 @@ app.controller("main", function ($scope, $http, $window) {
             $http.get(baseUrl + '/api/recipe/recipes/').then(function (res) {
 
                 let data = res.data;
-                console.log(data)
                 $scope.recipes = [];
                 data.forEach(f => {
 
