@@ -13,7 +13,6 @@ app.controller("register", function ($scope, $http) {
             "confirmPassword": $scope.confirmPassword,
             "name": $scope.name
         }
-        console.log(sendData)
         if (sendData.email !== undefined && sendData.name !== undefined && sendData.password !== undefined && sendData.confirmPassword !== undefined) {
             if (sendData.password !== sendData.confirmPassword) {
                 alert("პაროლები უნდა ემთხვეოდეს ერთმანეთს")
@@ -70,7 +69,6 @@ app.controller("main", function ($scope, $http, $window) {
         $scope.getUserInfo = function () {
 
             $http.get(baseUrl + '/api/user/me').then(function (res) {
-                console.log(res.data)
                 $scope.user = res.data.name;
             })
         }
@@ -83,6 +81,7 @@ app.controller("main", function ($scope, $http, $window) {
 
 
         $scope.getRecipes = function () {
+            $scope.testUrl = 'https://github.com/AnaChikashua/recipe-app-api/tree/main/app';
             $http.get(baseUrl + '/api/recipe/recipes/').then(function (res) {
 
                 let data = res.data;
@@ -100,8 +99,6 @@ app.controller("main", function ($scope, $http, $window) {
 
                     $scope.recipes.push(d)
                 })
-                console.log($scope.recipes)
-                // $scope.recipes = res.data
 
             });
         }
@@ -119,7 +116,6 @@ app.controller("main", function ($scope, $http, $window) {
         $scope.addIngredient = function () {
 
             $http.post(baseUrl + '/api/recipe/ingredients/', {"name": $scope.ingredientName}).then(function (res) {
-                console.log(res)
                 $scope.ingredientName = null
                 $scope.getIngredients()
             }).catch(function (res) {
@@ -129,7 +125,6 @@ app.controller("main", function ($scope, $http, $window) {
         $scope.selectedIngredients = []
         $scope.selectedTag = []
         $scope.changeIngr = function () {
-            console.log($scope.ingRec)
             $scope.selectedIngredients = []
             $scope.ingRec.forEach(f => {
                 $scope.selectedIngredients.push(f.name)
@@ -152,13 +147,15 @@ app.controller("main", function ($scope, $http, $window) {
             $scope.tagRecipe.forEach(f => {
                 t.push(f.id)
             })
+
+
             const sendData = {
                 "title": $scope.title,
                 "ingredients": ingr,
                 "tags": t,
                 "time_minutes": $scope.time,
                 "price": $scope.price.toString(),
-                "link": $scope.link
+                "link": $scope.link,
             };
             $http.post(baseUrl + '/api/recipe/recipes/', sendData).then(function (res) {
                 $scope.getRecipes()
@@ -175,6 +172,11 @@ app.controller("main", function ($scope, $http, $window) {
                 console.log(res)
             })
         }
+        $scope.redirectSite = function (link) {
+            $window.location.href = link;
+
+        }
+
     }
 
 })
